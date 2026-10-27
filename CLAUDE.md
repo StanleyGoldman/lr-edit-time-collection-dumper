@@ -1,5 +1,9 @@
 # lr-edit-time-collection-dumper
 
+## Pull requests
+
+Never merge pull requests, and don't offer to. Merging is the reviewer's job: open the PR, then stop. `main` is protected, so every change goes through a PR.
+
 ## Agent skills
 
 ### Issue tracker
