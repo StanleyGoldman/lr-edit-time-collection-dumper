@@ -1,5 +1,13 @@
 # lr-edit-time-collection-dumper
 
+## Pull requests
+
+Every change reaches `main` through a PR (a GitHub ruleset protects it). Your work ends at the hand-off: open the PR, report it, and leave the merge to the reviewer.
+
+## Writing for agents
+
+Writing anything an agent reads (this file, `docs/agents/`, skills, memory): load the `mattpocock-skills:writing-for-agents` skill first.
+
 ## Agent skills
 
 ### Issue tracker
