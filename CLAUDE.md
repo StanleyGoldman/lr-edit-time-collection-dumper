@@ -2,7 +2,11 @@
 
 ## Pull requests
 
-Never merge pull requests, and don't offer to. Merging is the reviewer's job: open the PR, then stop. `main` is protected, so every change goes through a PR.
+Every change reaches `main` through a PR (a GitHub ruleset protects it). Your work ends at the hand-off: open the PR, report it, and leave the merge to the reviewer.
+
+## Writing for agents
+
+Writing anything an agent reads (this file, `docs/agents/`, skills, memory): load the `mattpocock-skills:writing-for-agents` skill first.
 
 ## Agent skills
 
