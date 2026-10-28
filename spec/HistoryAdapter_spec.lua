@@ -61,11 +61,20 @@ describe("HistoryAdapter:editedImageIds", function()
 		assert.matches('^"[^"]+fake%-sqlite3%.exe"', calls[1])
 	end)
 
-	it("cleans up its temporary files", function()
-		local execute = fakeExecute "1\n"
-		adapter(execute):editedImageIds(100, nil)
-		assert.is_nil(io.open(tempDir .. "/EditWindowJobs-history.sql", "r"))
-		assert.is_nil(io.open(tempDir .. "/EditWindowJobs-history.out", "r"))
+	it("runs without os.remove, which Lightroom does not provide", function()
+		local removeFile = os.remove
+		os.remove = nil -- luacheck: ignore 122
+		local ok, ids = pcall(function()
+			return adapter(fakeExecute "1\n"):editedImageIds(100, nil)
+		end)
+		os.remove = removeFile -- luacheck: ignore 122
+		assert.is_true(ok, ids)
+		assert.are.same({ [1] = true }, ids)
+	end)
+
+	it("reads only the current Run's ids when the files from an earlier Run remain", function()
+		adapter(fakeExecute "1\n2\n"):editedImageIds(100, nil)
+		assert.are.same({ [3] = true }, adapter(fakeExecute "3\n"):editedImageIds(100, nil))
 	end)
 
 	it("explains a missing sqlite3.exe", function()

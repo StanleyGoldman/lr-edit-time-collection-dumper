@@ -26,12 +26,13 @@ Setup: `pwsh tools/Get-Sqlite.ps1`, then File > Plug-in Manager > Add (or Reload
 - [ ] Relative window "Last 7 days": the target ends up with exactly the source photos you changed in
       Develop this week. Rating or keywording a photo alone does not bring it in.
 - [ ] Fixed window covering one past day: photos edited that day are in, even if edited again since.
+- [ ] After a Run, a toast gives the summary and fades without a click; a failure stays up longer.
 - [ ] A photo you dragged into the target by hand is removed by the next Run.
 - [ ] A virtual copy edited in the window is added without its master (unless the master was also edited).
 - [ ] The progress bar shows in the activity area; clicking its × leaves the target unchanged and the
-      summary says the Job was canceled.
+      toast says the Job was canceled.
 - [ ] Edit > Undo after a Run reverts that Run in one step and names it "Run Job: <name>".
-- [ ] Delete a Source Collection, run the Job: the summary names the missing collection and the target
+- [ ] Delete a Source Collection, run the Job: the toast names the missing collection and the target
       is unchanged.
-- [ ] Run All Jobs with one broken Job: the others still run and the summary lists each.
-- [ ] Move `bin\sqlite3.exe` away and run: the summary explains it is missing and points to the README.
+- [ ] Run All Jobs with one broken Job: the others still run, the toast counts each outcome and the log lists each Job.
+- [ ] Move `bin\sqlite3.exe` away and run: the toast explains it is missing and points to the README.
