@@ -1,0 +1,6 @@
+# Local Lua 5.1 toolchain (see README)
+.lua/
+
+# luacov output
+luacov.stats.out
+luacov.report.out

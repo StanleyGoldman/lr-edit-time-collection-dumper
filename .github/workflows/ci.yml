@@ -1,0 +1,44 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+# Job names `lua` and `stylua` are required checks in the main ruleset; keep them.
+jobs:
+  stylua:
+    runs-on: ubuntu-latest
+    env:
+      # Same version as the README's local setup. SHA-256 of stylua-linux-x86_64.zip from that release.
+      STYLUA_VERSION: 2.5.2
+      STYLUA_SHA256: bcb0d855e91f102f28a370e850f8566b3b44b79e6274d806ea5246837c0fd5ab
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install StyLua
+        run: |
+          curl -fsSL -o stylua.zip "https://github.com/JohnnyMorganz/StyLua/releases/download/v${STYLUA_VERSION}/stylua-linux-x86_64.zip"
+          echo "${STYLUA_SHA256}  stylua.zip" | sha256sum --check
+          unzip -q stylua.zip -d "$RUNNER_TEMP/stylua"
+          rm stylua.zip
+          echo "$RUNNER_TEMP/stylua" >> "$GITHUB_PATH"
+      - name: stylua --check
+        run: stylua --check .
+  lua:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Same versions as the README's local setup.
+      - name: Install Lua 5.1 and LuaRocks
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q libreadline-dev
+          pipx run --spec hererocks==0.25.1 hererocks .lua -l 5.1 -r 3.8.0
+          echo "$PWD/.lua/bin" >> "$GITHUB_PATH"
+      - name: Install rocks
+        run: luarocks install busted && luarocks install luacheck && luarocks install luacov
+      - name: luacheck
+        run: luacheck .
+      - name: busted
+        run: busted -c
+      - name: Coverage report
+        run: luacov && cat luacov.report.out
