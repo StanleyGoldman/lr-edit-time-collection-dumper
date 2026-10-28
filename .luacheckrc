@@ -20,6 +20,8 @@ stds.lightroom = {
 for k, v in pairs(stds.lua51.read_globals) do
 	stds.lightroom.read_globals[k] = v
 end
+-- Lightroom's os lacks remove, rename, execute and exit; os.remove crashed a Run.
+stds.lightroom.read_globals.os = { fields = { "clock", "date", "difftime", "time" } }
 
 -- Present in plain Lua 5.1 but absent from, or unsafe in, Lightroom's environment.
 not_globals = {

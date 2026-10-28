@@ -40,6 +40,9 @@ function HistoryAdapter:editedImageIds(startTime, endTime)
 			)
 	end
 	-- Windows accepts "/" in paths, so one separator serves every platform.
+	-- Every Run overwrites these two files and nothing deletes them, so the
+	-- plugin holds no file-deleting code; the ">" redirect empties the output
+	-- before sqlite3 writes, so a Run never reads an earlier Run's ids.
 	local scriptPath = self.tempDir .. "/EditWindowJobs-history.sql"
 	local outputPath = self.tempDir .. "/EditWindowJobs-history.out"
 	local script = assert(io.open(scriptPath, "w"))
@@ -59,8 +62,6 @@ function HistoryAdapter:editedImageIds(startTime, endTime)
 	end
 	local exitCode = self.execute(command)
 	local output = readFile(outputPath) or ""
-	os.remove(scriptPath)
-	os.remove(outputPath)
 
 	if exitCode ~= 0 then
 		return nil, string.format("sqlite3 exited with code %s: %s", tostring(exitCode), output)
