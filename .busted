@@ -1,0 +1,10 @@
+return {
+	_all = {
+		lpath = "EditWindowJobs.lrdevplugin/?.lua",
+		helper = "spec/helper.lua",
+	},
+	default = {
+		ROOT = { "spec" },
+		pattern = "_spec",
+	},
+}

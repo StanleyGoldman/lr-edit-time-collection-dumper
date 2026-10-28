@@ -4,6 +4,10 @@
 
 Every change reaches `main` through a PR (a GitHub ruleset protects it). Your work ends at the hand-off: open the PR, report it, and leave the merge to the reviewer.
 
+## Lua
+
+Writing or reviewing Lua: read docs/coding-standards.md
+
 ## Writing for agents
 
 Writing anything an agent reads (this file, `docs/agents/`, skills, memory): load the `mattpocock-skills:writing-for-agents` skill first.
