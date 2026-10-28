@@ -11,9 +11,10 @@ Rules for the plugin's Lua. Formatting and globals are enforced by `stylua.toml`
 
 ## Core and adapter boundary
 
-- **Keep `core/` pure: plain Lua, no `import`, no I/O.** Core is what busted tests without Lightroom; one SDK call there makes a module untestable outside Lightroom.
+- **Keep every `.lua` file flat in `EditWindowJobs.lrdevplugin/`.** Lightroom's `require` loads only files at the top of the plugin folder.
+- **Give SDK-facing files a role suffix: `*Adapter.lua` (catalog, history, storage), `*Dialog.lua` (`LrView` UI), `*Menu.lua` (menu entry points).** Every other module is core: plain Lua, no `import`, no I/O. Core is what busted tests without Lightroom, and `.luacheckrc` grants `import` only to suffixed files, so an SDK call in core fails lint.
 - **Represent times in core as numbers of Cocoa seconds** (seconds since 2001-01-01 UTC, the SDK's `LrDate` epoch). One unit end to end means no conversion bugs at the boundary.
-- **Pass SDK modules into adapters as arguments** (`Catalog.new { catalog = ..., LrTasks = ... }`) rather than importing them at file scope. Specs then hand in fakes, and the stub `import` in `spec/helper.lua` stays a tripwire for anything missed.
+- **Pass SDK modules into adapters as arguments** (`CatalogAdapter.new { catalog = ..., LrTasks = ... }`) rather than importing them at file scope. Specs then hand in fakes, and the stub `import` in `spec/helper.lua` stays a tripwire for anything missed.
 - **Put each SDK or external-process dependency in exactly one adapter.** A Lightroom version change or a catalog schema change then touches one file.
 
 ## LrTasks and write access
@@ -33,7 +34,7 @@ Rules for the plugin's Lua. Formatting and globals are enforced by `stylua.toml`
 
 ## Testing
 
-- **Test core through its public functions with busted specs in `spec/core/`, one `*_spec.lua` per module.** Specs that use only the interface survive refactors of the internals.
+- **Test core through its public functions with busted specs in `spec/`, one `<Module>_spec.lua` per module.** Specs that use only the interface survive refactors of the internals.
 - **Write the failing spec first** (red, green, refactor). A spec seen failing proves it can catch the bug.
 - **Give adapters fakes through `spec/helper.lua`'s `fakeImport` or constructor arguments, and reset them in `after_each`.** The stub `import` errors on any unregistered module, so leftover fakes would hide a missing dependency in the next spec.
 - **Build SQLite fixtures inside the spec with the real table shape** rather than committing binary databases. The schema stays visible in the test and reviewable in diffs.

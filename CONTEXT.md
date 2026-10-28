@@ -17,7 +17,7 @@ The regular collection a Job owns and fills with exactly the photos that qualify
 _Avoid_: Output, destination, result collection
 
 **Edit**:
-A Develop adjustment recorded in a photo's history, not counting the import step. Rating, flag, keyword and caption changes are not Edits.
+A Develop adjustment recorded in a photo's history. History steps that only record the photo arriving, being copied, snapshotted, exported or published are not Edits, and neither are rating, flag, keyword and caption changes.
 _Avoid_: Change, modification, last edit time
 
 **Edit Window**:
@@ -28,7 +28,7 @@ _Avoid_: Date range, time range
 An Edit Window between a start date and an end date, with the end date included.
 
 **Relative Edit Window**:
-An Edit Window covering the last N hours or days, measured back from the moment of the Run.
+An Edit Window that starts N hours or days before the moment of the Run and has no end, so Edits stamped later than the Run still count.
 
 **Run**:
 One execution of a Job, which brings its Target Collection up to date as a single undoable change.

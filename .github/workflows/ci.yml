@@ -31,7 +31,7 @@ jobs:
       # Same versions as the README's local setup.
       - name: Install Lua 5.1 and LuaRocks
         run: |
-          sudo apt-get update -q && sudo apt-get install -y -q libreadline-dev
+          sudo apt-get update -q && sudo apt-get install -y -q libreadline-dev sqlite3
           pipx run --spec hererocks==0.25.1 hererocks .lua -l 5.1 -r 3.8.0
           echo "$PWD/.lua/bin" >> "$GITHUB_PATH"
       - name: Install rocks

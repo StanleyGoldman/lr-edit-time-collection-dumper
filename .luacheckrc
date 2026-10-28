@@ -1,7 +1,10 @@
 -- Modelled on rcloran/lr-inaturalist-publish.
-std = "lightroom"
+-- Core modules get plain Lua 5.1, so an SDK call in core fails lint; only
+-- the role-suffixed files below (see docs/coding-standards.md) may import.
+std = "lua51"
 
-exclude_files = { ".lua/", ".luarocks/", "lua_modules/" }
+-- .claude/ holds local agent worktrees and spike/ the untracked spike leftovers.
+exclude_files = { ".lua/", ".luarocks/", "lua_modules/", ".claude/", "spike/" }
 
 -- Lightroom's plugin environment: Lua 5.1 plus the SDK's own globals.
 stds.lightroom = {
@@ -34,6 +37,11 @@ stds.lightroom_plugin_info = {
 }
 files["*/Info.lua"].std = "lightroom_plugin_info"
 
+for _, suffix in ipairs { "Adapter", "Dialog", "Menu" } do
+	files["EditWindowJobs.lrdevplugin/*" .. suffix .. ".lua"].std = "lightroom"
+end
+
 files["spec/**"].std = "+busted"
+files["spec/**"].read_globals = { "import" }
 -- spec/helper.lua installs the stub import, so it must write that global.
 files["spec/helper.lua"].globals = { "import" }

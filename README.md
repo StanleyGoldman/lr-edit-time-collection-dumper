@@ -44,4 +44,4 @@ stylua --check .
 .lua\bin\busted -c
 ```
 
-`busted -c` writes `luacov.stats.out`; run `.lua\bin\luacov` to turn it into `luacov.report.out`, covering `EditWindowJobs.lrdevplugin/core/`.
+`busted -c` writes `luacov.stats.out`; run `.lua\bin\luacov` to turn it into `luacov.report.out`, covering the core modules.
