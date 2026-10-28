@@ -2,6 +2,24 @@
 
 A Lightroom Classic plugin (Windows) that keeps collections of recently edited photos. Terms are defined in [CONTEXT.md](CONTEXT.md).
 
+## Install in Lightroom Classic (Windows)
+
+1. Fetch the SQLite command-line tool into the plugin (the plugin reads Develop history with it; see [ADR 0001](docs/adr/0001-develop-history-from-catalog-db.md)):
+
+   ```bat
+   pwsh tools/Get-Sqlite.ps1
+   ```
+
+2. In Lightroom: File > Plug-in Manager > Add, choose the `EditWindowJobs.lrdevplugin` folder, and check that it shows as Enabled. Lightroom runs the plugin from that folder, so leave it in place.
+3. Use the commands under Library > Plug-in Extras:
+   - **Manage Jobs…** creates, edits, deletes and runs Jobs. Select the collections you want as sources in Lightroom's Collections panel first: a new Job starts with them.
+   - **Run Job…** runs one Job.
+   - **Run All Jobs** runs every Job in order.
+
+   A Run shows progress in Lightroom's activity area (cancel with its ×), then a summary. Each Run is one Edit > Undo step. Problems are also logged to `%LOCALAPPDATA%\Adobe\Lightroom\Logs\LrClassicLogs\EditWindowJobs.log`.
+
+[docs/manual-test.md](docs/manual-test.md) is the checklist for trying a change in Lightroom.
+
 ## Development setup (Windows)
 
 The tests and linters run on a local Lua 5.1 in `.lua/` (gitignored), matching the Lua that Lightroom embeds. Needs Python and Visual Studio 2022 with the C++ workload.
@@ -44,4 +62,6 @@ stylua --check .
 .lua\bin\busted -c
 ```
 
-`busted -c` writes `luacov.stats.out`; run `.lua\bin\luacov` to turn it into `luacov.report.out`, covering `EditWindowJobs.lrdevplugin/core/`.
+The `HistorySql` integration spec runs a real `sqlite3`: on Windows, point it at the fetched one with `set SQLITE3=%CD%\EditWindowJobs.lrdevpluginin\sqlite3.exe` first.
+
+`busted -c` writes `luacov.stats.out`; run `.lua\bin\luacov` to turn it into `luacov.report.out`, covering the core modules.

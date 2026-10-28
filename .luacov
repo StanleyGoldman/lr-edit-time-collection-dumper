@@ -1,6 +1,7 @@
 return {
-	include = { "EditWindowJobs%.lrdevplugin/core/.+$" },
-	exclude = { "spec/" },
+	include = { "EditWindowJobs%.lrdevplugin/.+$" },
+	-- Core only: SDK-facing files are checked by hand in Lightroom.
+	exclude = { "spec/", "Adapter$", "Dialog$", "Menu$", "Info$" },
 	statsfile = "luacov.stats.out",
 	reportfile = "luacov.report.out",
 }

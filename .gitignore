@@ -4,3 +4,6 @@
 # luacov output
 luacov.stats.out
 luacov.report.out
+
+# Fetched by tools/Get-Sqlite.ps1
+EditWindowJobs.lrdevplugin/bin/

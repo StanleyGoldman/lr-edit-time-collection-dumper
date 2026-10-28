@@ -6,4 +6,5 @@ An Edit is a Develop history step, and the Lightroom SDK exposes no history date
 
 - The catalog schema is undocumented and Adobe may change it in any release. A Run that can't read history aborts with an error and leaves the Target Collection untouched, rather than guessing.
 - The plugin ships a native executable and is Windows-only until a macOS binary is added.
-- Reading a database Lightroom has open relies on SQLite's concurrent-reader behaviour; the spike (`docs/research/edit-time-spike.md`) checks this against a real catalog.
+- Reading a database Lightroom has open relies on SQLite's concurrent-reader behaviour. The spike confirmed it on a 202k-photo catalog with Lightroom open; see `docs/research/edit-time-spike.md`.
+- Which steps are Edits is decided by step name, and Lightroom writes step names in its UI language. The excluded prefixes are English, matching the plugin's English-only scope.
