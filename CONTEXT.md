@@ -21,7 +21,7 @@ A Develop adjustment recorded in a photo's history. History steps that only reco
 _Avoid_: Change, modification, last edit time
 
 **Edit Window**:
-The period of time a Job looks for Edits in. A photo qualifies when any of its Edits falls inside it.
+The period of time a Job looks for Edits in. A photo qualifies when any of its Edits falls inside it, or, for a Job that includes Created Photos, when it was created inside it.
 _Avoid_: Date range, time range
 
 **Created Photo**:
