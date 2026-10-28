@@ -16,7 +16,7 @@ A Lightroom Classic plugin (Windows) that keeps collections of recently edited p
    - **Run Job…** runs one Job.
    - **Run All Jobs** runs every Job in order.
 
-   A Run shows progress in Lightroom's activity area (cancel with its ×), then a summary. Each Run is one Edit > Undo step. Problems are also logged to `%LOCALAPPDATA%\Adobe\Lightroom\Logs\LrClassicLogs\EditWindowJobs.log`.
+   A Run shows progress in Lightroom's activity area (cancel with its ×), then a toast with the summary, which fades on its own. Each Run is one Edit > Undo step. Every summary and problem is also logged to `%LOCALAPPDATA%\Adobe\Lightroom\Logs\LrClassicLogs\EditWindowJobs.log`.
 
 [docs/manual-test.md](docs/manual-test.md) is the checklist for trying a change in Lightroom.
 

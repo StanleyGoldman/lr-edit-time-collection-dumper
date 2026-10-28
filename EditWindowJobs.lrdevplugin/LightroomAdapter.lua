@@ -75,7 +75,12 @@ local function localMidnight(year, month, day)
 	return LrDate.timeFromComponents(year, month, day, 0, 0, 0, "local")
 end
 
--- Runs the Jobs under a cancellable progress bar, then logs and shows the summary.
+-- Seconds a Run's toast stays up; a failure stays longer so it can be read.
+local TOAST_SECONDS = 3
+local FAILURE_TOAST_SECONDS = 8
+
+-- Runs the Jobs under a cancellable progress bar, then logs the summary and
+-- shows it as a toast, which needs no click to dismiss.
 function LightroomAdapter.runJobs(context, services, jobs)
 	local scope = LrProgressScope({ title = LightroomAdapter.TITLE, functionContext = context })
 	local results = Runner.runAll(jobs, {
@@ -96,9 +101,11 @@ function LightroomAdapter.runJobs(context, services, jobs)
 		},
 	})
 	scope:done()
-	local text = RunReport.format(results, #jobs)
-	logger:info(text)
-	LightroomAdapter.message(text, RunReport.hasFailures(results) and "warning" or "info")
+	logger:info(RunReport.format(results, #jobs))
+	LrDialogs.showBezel(
+		RunReport.toast(results, #jobs),
+		RunReport.hasFailures(results) and FAILURE_TOAST_SECONDS or TOAST_SECONDS
+	)
 end
 
 return LightroomAdapter

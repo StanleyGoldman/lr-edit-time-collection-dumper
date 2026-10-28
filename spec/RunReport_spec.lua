@@ -40,6 +40,35 @@ describe("RunReport.format", function()
 	end)
 end)
 
+describe("RunReport.toast", function()
+	it("gives a single Job's summary as is", function()
+		local results = { { jobName = "This week", added = 0, removed = 0, kept = 7 } }
+		assert.are.equal('"This week": already up to date (7 photos).', RunReport.toast(results, 1))
+	end)
+
+	it("counts each outcome of several Jobs and points to the log", function()
+		local results = {
+			{ jobName = "A", added = 1, removed = 0, kept = 0 },
+			{ jobName = "B", added = 0, removed = 2, kept = 3 },
+			{ jobName = "C", added = 0, removed = 0, kept = 5 },
+			{ jobName = "D", error = "x" },
+			{ jobName = "E", canceled = true },
+		}
+		assert.are.equal(
+			"6 Jobs: 2 updated, 1 up to date, 1 failed, 1 canceled, 1 not run. Details are in the log.",
+			RunReport.toast(results, 6)
+		)
+	end)
+
+	it("leaves out outcomes that did not happen", function()
+		local results = {
+			{ jobName = "A", added = 0, removed = 0, kept = 1 },
+			{ jobName = "B", added = 0, removed = 0, kept = 2 },
+		}
+		assert.are.equal("2 Jobs: 2 up to date. Details are in the log.", RunReport.toast(results, 2))
+	end)
+end)
+
 describe("RunReport.hasFailures", function()
 	it("is true when any Run failed", function()
 		local results = {

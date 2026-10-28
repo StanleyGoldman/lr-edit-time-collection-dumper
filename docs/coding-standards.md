@@ -28,8 +28,8 @@ Rules for the plugin's Lua. Formatting and globals are enforced by `stylua.toml`
 
 ## Errors and logging
 
-- **Return `nil, message` for expected failures** (missing collection, unreadable catalog, bad user input) **and `error()` only for programmer mistakes.** Callers can then report expected failures in the summary dialog, while bugs still surface loudly.
-- **Write messages that name the thing involved**, such as the Job, the collection name or path, and the command run. The summary dialog and the log are the only diagnostics a user can send back.
+- **Return `nil, message` for expected failures** (missing collection, unreadable catalog, bad user input) **and `error()` only for programmer mistakes.** Callers can then report expected failures in the Run summary, while bugs still surface loudly.
+- **Write messages that name the thing involved**, such as the Job, the collection name or path, and the command run. The Run toast and the log are the only diagnostics a user can send back.
 - **Log through `LrLogger` with a single plugin logger enabled to a logfile.** `print` goes nowhere inside Lightroom, and one logfile is the one place to look.
 
 ## Testing

@@ -1,4 +1,4 @@
--- Turns Runner results into the text of the summary shown after a Run.
+-- Turns Runner results into the text logged and shown after a Run.
 
 local RunReport = {}
 
@@ -33,6 +33,38 @@ function RunReport.format(results, jobCount)
 		lines[#lines + 1] = string.format("%d more Jobs were not run.", notRun)
 	end
 	return table.concat(lines, "\n")
+end
+
+-- One line for the toast after a Run: a single Job's summary, or for several
+-- Jobs a count per outcome, since format's full text goes to the log.
+function RunReport.toast(results, jobCount)
+	if jobCount == 1 and #results == 1 then
+		return describe(results[1])
+	end
+	local counts = { updated = 0, upToDate = 0, failed = 0, canceled = 0 }
+	for _, result in ipairs(results) do
+		if result.error then
+			counts.failed = counts.failed + 1
+		elseif result.canceled then
+			counts.canceled = counts.canceled + 1
+		elseif result.added == 0 and result.removed == 0 then
+			counts.upToDate = counts.upToDate + 1
+		else
+			counts.updated = counts.updated + 1
+		end
+	end
+	local parts = {}
+	local function add(count, label)
+		if count > 0 then
+			parts[#parts + 1] = string.format("%d %s", count, label)
+		end
+	end
+	add(counts.updated, "updated")
+	add(counts.upToDate, "up to date")
+	add(counts.failed, "failed")
+	add(counts.canceled, "canceled")
+	add(jobCount - #results, "not run")
+	return string.format("%d Jobs: %s. Details are in the log.", jobCount, table.concat(parts, ", "))
 end
 
 function RunReport.hasFailures(results)
