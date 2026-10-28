@@ -54,6 +54,7 @@ function JobForm.fields(job)
 		unit = window.unit or "days",
 		startDate = window.startDate or "",
 		endDate = window.endDate or "",
+		includeCreated = job and job.includeCreated == true or false,
 	}
 end
 
@@ -141,7 +142,14 @@ function JobForm.toJob(fields, entries, id)
 		target = { id = fields.targetId, path = pathOf(entries, fields.targetId) }
 	end
 
-	return { id = id, name = trim(fields.name), sources = sources, target = target, window = window }
+	return {
+		id = id,
+		name = trim(fields.name),
+		sources = sources,
+		target = target,
+		window = window,
+		includeCreated = fields.includeCreated == true,
+	}
 end
 
 return JobForm

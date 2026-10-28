@@ -3,26 +3,35 @@
 
 local HistorySql = {}
 
--- History steps whose name starts with one of these record the photo arriving,
--- being copied, snapshotted, exported or published, not an Edit. Lightroom writes
--- step names in its UI language; these are the English ones.
-HistorySql.NOT_EDIT_PREFIXES = {
+-- History steps whose name starts with one of these are not Edits. Lightroom
+-- writes step names in its UI language; these are the English ones.
+-- CREATION_PREFIXES record the photo arriving or a virtual copy being made, which
+-- a Job that includes created photos counts alongside its Edits.
+HistorySql.CREATION_PREFIXES = {
 	"Import (",
 	"Imported from Lr mobile",
-	"Publish - ",
-	"Export - ",
 	"Create Virtual Cop",
 	"Create Proof Copy",
+}
+-- OTHER_PREFIXES record the photo being exported, published or snapshotted.
+HistorySql.OTHER_PREFIXES = {
+	"Publish - ",
+	"Export - ",
 	"Snapshot: ",
 }
 
-function HistorySql.isEdit(stepName)
-	for _, prefix in ipairs(HistorySql.NOT_EDIT_PREFIXES) do
-		if string.sub(stepName, 1, #prefix) == prefix then
-			return false
+local function startsWithAny(text, prefixes)
+	for _, prefix in ipairs(prefixes) do
+		if string.sub(text, 1, #prefix) == prefix then
+			return true
 		end
 	end
-	return true
+	return false
+end
+
+function HistorySql.isEdit(stepName)
+	return not startsWithAny(stepName, HistorySql.CREATION_PREFIXES)
+		and not startsWithAny(stepName, HistorySql.OTHER_PREFIXES)
 end
 
 local function sqlNumber(value)
@@ -38,14 +47,21 @@ end
 
 -- Returns a script for `sqlite3 -readonly <catalog>` that prints, one per line,
 -- the id of every photo with an Edit at or after startTime and before endTime
--- (no upper bound when endTime is nil). Times are Cocoa seconds.
-function HistorySql.editedImagesScript(startTime, endTime)
+-- (no upper bound when endTime is nil). Times are Cocoa seconds. includeCreated
+-- also counts photos imported or virtual copies made in that time.
+function HistorySql.editedImagesScript(startTime, endTime, includeCreated)
 	local conditions = { "dateCreated >= " .. sqlNumber(startTime) }
 	if endTime ~= nil then
 		conditions[#conditions + 1] = "dateCreated < " .. sqlNumber(endTime)
 	end
+	local excluded = { unpack(HistorySql.OTHER_PREFIXES) }
+	if not includeCreated then
+		for _, prefix in ipairs(HistorySql.CREATION_PREFIXES) do
+			excluded[#excluded + 1] = prefix
+		end
+	end
 	-- substr, unlike LIKE, compares exactly: case-sensitive and with no wildcards.
-	for _, prefix in ipairs(HistorySql.NOT_EDIT_PREFIXES) do
+	for _, prefix in ipairs(excluded) do
 		conditions[#conditions + 1] =
 			string.format("substr(coalesce(name, ''), 1, %d) <> %s", #prefix, sqlString(prefix))
 	end

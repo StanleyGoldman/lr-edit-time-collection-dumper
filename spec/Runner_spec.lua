@@ -32,8 +32,8 @@ end
 
 local function fakeHistory(editedIds)
 	local history = { calls = {} }
-	function history:editedImageIds(startTime, endTime)
-		self.calls[#self.calls + 1] = { startTime = startTime, endTime = endTime }
+	function history:editedImageIds(startTime, endTime, includeCreated)
+		self.calls[#self.calls + 1] = { startTime = startTime, endTime = endTime, includeCreated = includeCreated }
 		if self.error then
 			return nil, self.error
 		end
@@ -99,12 +99,18 @@ describe("Runner.run", function()
 		local result = Runner.run(job(), d)
 
 		assert.are.same({ jobName = "This week", added = 3, removed = 2, kept = 0 }, result)
-		assert.are.same({ { startTime = NOW - 2 * 3600, endTime = nil } }, d.history.calls)
+		assert.are.same({ { startTime = NOW - 2 * 3600, endTime = nil, includeCreated = false } }, d.history.calls)
 		local applied = d.catalog.applied[1]
 		assert.are.equal(9, applied.target)
 		assert.are.same({ 10, 12, 13 }, applied.plan.add)
 		assert.are.same({ 11, 50 }, applied.plan.remove)
 		assert.are.equal("Run Job: This week", applied.actionName)
+	end)
+
+	it("asks the history for created photos when the Job includes them", function()
+		local d = deps()
+		Runner.run(job({ includeCreated = true }), d)
+		assert.is_true(d.history.calls[1].includeCreated)
 	end)
 
 	it("skips the write when nothing changes", function()

@@ -12,7 +12,7 @@ A Lightroom Classic plugin (Windows) that keeps collections of recently edited p
 
 2. In Lightroom: File > Plug-in Manager > Add, choose the `EditWindowJobs.lrdevplugin` folder, and check that it shows as Enabled. Lightroom runs the plugin from that folder, so leave it in place.
 3. Use the commands under Library > Plug-in Extras:
-   - **Manage Jobs…** creates, edits, deletes and runs Jobs. Select the collections you want as sources in Lightroom's Collections panel first: a new Job starts with them.
+   - **Manage Jobs…** creates, edits, deletes and runs Jobs. Select the collections you want as sources in Lightroom's Collections panel first: a new Job starts with them. A Job can also include photos imported, and virtual copies made, in its window.
    - **Run Job…** runs one Job.
    - **Run All Jobs** runs every Job in order.
 

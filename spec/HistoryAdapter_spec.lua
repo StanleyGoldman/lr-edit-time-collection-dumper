@@ -55,6 +55,14 @@ describe("HistoryAdapter:editedImageIds", function()
 		assert.matches('2>&1"$', calls[1])
 	end)
 
+	it("writes a script that counts creation steps when created photos are included", function()
+		adapter(fakeExecute ""):editedImageIds(100, nil, true)
+		local file = assert(io.open(tempDir .. "/EditWindowJobs-history.sql"))
+		local script = file:read "*a"
+		file:close()
+		assert.is_nil(string.find(script, "'Import ('", 1, true))
+	end)
+
 	it("leaves the command unwrapped outside Windows", function()
 		local execute, calls = fakeExecute ""
 		adapter(execute, { isWindows = false }):editedImageIds(100, nil)

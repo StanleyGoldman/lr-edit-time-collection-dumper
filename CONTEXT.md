@@ -5,7 +5,7 @@ A Lightroom Classic plugin that keeps collections of recently edited photos. Eac
 ## Language
 
 **Job**:
-A saved rule that names its Source Collections, its Target Collection and its Edit Window.
+A saved rule that names its Source Collections, its Target Collection and its Edit Window, and whether Created Photos qualify too.
 _Avoid_: Task, rule, preset
 
 **Source Collection**:
@@ -21,8 +21,12 @@ A Develop adjustment recorded in a photo's history. History steps that only reco
 _Avoid_: Change, modification, last edit time
 
 **Edit Window**:
-The period of time a Job looks for Edits in. A photo qualifies when any of its Edits falls inside it.
+The period of time a Job looks for Edits in. A photo qualifies when any of its Edits falls inside it, or, for a Job that includes Created Photos, when it was created inside it.
 _Avoid_: Date range, time range
+
+**Created Photo**:
+A photo whose import (including from Lightroom mobile), or whose creation as a virtual copy, falls inside the Edit Window. A Job that includes Created Photos qualifies them as though they had an Edit there.
+_Avoid_: New photo, imported photo
 
 **Fixed Edit Window**:
 An Edit Window between a start date and an end date, with the end date included.

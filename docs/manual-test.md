@@ -20,6 +20,8 @@ Setup: `pwsh tools/Get-Sqlite.ps1`, then File > Plug-in Manager > Add (or Reload
       another Job uses, a duplicate name, length "0", dates in the wrong form, end before start.
 - [ ] Close and reopen Manage Jobs…: the Jobs are still there. Restart Lightroom: still there.
 - [ ] Edit… changes a Job; Delete… asks first and leaves the Target Collection alone.
+- [ ] "Also include photos imported and virtual copies made in the window" starts unchecked for a new Job
+      and keeps its state after Save, close and reopen.
 
 ## Runs
 
@@ -29,6 +31,8 @@ Setup: `pwsh tools/Get-Sqlite.ps1`, then File > Plug-in Manager > Add (or Reload
 - [ ] After a Run, a toast gives the summary and fades without a click; a failure stays up longer.
 - [ ] A photo you dragged into the target by hand is removed by the next Run.
 - [ ] A virtual copy edited in the window is added without its master (unless the master was also edited).
+- [ ] With "Also include photos imported…" checked, a photo imported into a Source Collection in the window
+      and a virtual copy made in the window come in without being edited; unchecked, they stay out.
 - [ ] The progress bar shows in the activity area; clicking its × leaves the target unchanged and the
       toast says the Job was canceled.
 - [ ] Edit > Undo after a Run reverts that Run in one step and names it "Run Job: <name>".

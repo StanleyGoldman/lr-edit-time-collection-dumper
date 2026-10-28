@@ -10,8 +10,18 @@ local Jobs = require "Jobs"
 
 local JobEditorDialog = {}
 
-local FIELD_KEYS =
-	{ "name", "sourceIds", "targetId", "newTargetName", "kind", "amount", "unit", "startDate", "endDate" }
+local FIELD_KEYS = {
+	"name",
+	"sourceIds",
+	"targetId",
+	"newTargetName",
+	"kind",
+	"amount",
+	"unit",
+	"startDate",
+	"endDate",
+	"includeCreated",
+}
 
 local function selectedValues(value)
 	if type(value) == "table" then
@@ -115,6 +125,10 @@ local function buildContents(f, props, selectedCount, actions)
 				f:static_text({ title = "to" }),
 				f:edit_field({ value = LrView.bind "endDate", width_in_chars = 10, enabled = isKind "fixed" }),
 				f:static_text({ title = "(YYYY-MM-DD, both days included)" }),
+			}),
+			f:checkbox({
+				title = "Also include photos imported and virtual copies made in the window",
+				value = LrView.bind "includeCreated",
 			}),
 		}),
 	})
