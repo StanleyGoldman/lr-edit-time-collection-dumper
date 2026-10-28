@@ -1,6 +1,8 @@
 -- Checks Jobs and converts the list of Jobs to and from the text stored in the
 -- catalog. A Job is { id, name, sources = { { id, path } }, target = { id, path },
--- window }, where ids are collection localIdentifiers and paths are for messages.
+-- window, includeCreated }, where ids are collection localIdentifiers and paths are
+-- for messages. includeCreated (absent in Jobs saved before it existed) also
+-- qualifies photos imported or virtual copies made in the Edit Window.
 
 local EditWindow = require "EditWindow"
 local Json = require "Json"

@@ -67,6 +67,13 @@ describe("HistorySql.editedImagesScript", function()
 		assert.is_nil(string.find(script, "dateCreated <", 1, true))
 	end)
 
+	it("keeps creation steps but still leaves out publishes when created photos are included", function()
+		local script = HistorySql.editedImagesScript(100, nil, true)
+		assert.is_nil(string.find(script, "'Import ('", 1, true))
+		assert.is_nil(string.find(script, "'Create Virtual Cop'", 1, true))
+		assert.matches("'Publish - '", script, 1, true)
+	end)
+
 	it("rejects a start time that is not a number", function()
 		assert.has_error(function()
 			HistorySql.editedImagesScript("100; DROP TABLE x", nil)
@@ -115,6 +122,9 @@ describe("HistorySql against sqlite3", function()
 		{ 9, 150, "Snapshot: Before (3/3/2023 8:00:00 PM)" },
 		{ 10, 150, "O'Brien's preset" },
 		{ 11, 150, nil },
+		{ 12, 150, "Imported from Lr mobile (4/2/2024 9:01:11 AM)" },
+		{ 13, 150, "Create Proof Copy (3/3/2023 8:00:00 PM)" },
+		{ 14, 50, "Import (10/27/2026 10:57:02 PM)" },
 	}
 
 	setup(function()
@@ -155,6 +165,20 @@ describe("HistorySql against sqlite3", function()
 	it("finds photos with an Edit any time after the start of an open window", function()
 		local ids = assert(HistorySql.parseImageIds(run(HistorySql.editedImagesScript(100, nil))))
 		assert.are.same({ [1] = true, [5] = true, [6] = true, [7] = true, [8] = true, [10] = true, [11] = true }, ids)
+	end)
+
+	it("also finds photos imported or copied inside the window when created photos are included", function()
+		local ids = assert(HistorySql.parseImageIds(run(HistorySql.editedImagesScript(100, 200, true))))
+		assert.are.same({
+			[1] = true,
+			[2] = true,
+			[6] = true,
+			[7] = true,
+			[10] = true,
+			[11] = true,
+			[12] = true,
+			[13] = true,
+		}, ids)
 	end)
 
 	it("reports a catalog without the history table as an error", function()

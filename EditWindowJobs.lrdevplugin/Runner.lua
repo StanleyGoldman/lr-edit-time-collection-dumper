@@ -5,7 +5,7 @@
 -- deps.localMidnight(year, month, day): local midnight in Cocoa seconds.
 -- deps.catalog: collection(id) -> handle or nil; isSmart(handle);
 --   photoIds(handle) -> ids; apply(target, plan, actionName) -> true or nil, message.
--- deps.history: editedImageIds(startTime, endTime) -> set or nil, message.
+-- deps.history: editedImageIds(startTime, endTime, includeCreated) -> set or nil, message.
 -- deps.progress: setCaption(text); isCanceled(); setPortionComplete(done, total).
 --
 -- A result is { jobName, added, removed, kept }, { jobName, error } or
@@ -56,7 +56,7 @@ function Runner.run(job, deps)
 	end
 
 	progress:setCaption(job.name .. ": reading Develop history")
-	local editedIds, historyMessage = deps.history:editedImageIds(startTime, endTime)
+	local editedIds, historyMessage = deps.history:editedImageIds(startTime, endTime, job.includeCreated == true)
 	if not editedIds then
 		return failure(job, historyMessage)
 	end

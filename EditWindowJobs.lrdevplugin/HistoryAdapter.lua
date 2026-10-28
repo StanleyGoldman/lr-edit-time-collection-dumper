@@ -30,8 +30,9 @@ local function readFile(path)
 end
 
 -- Returns the set of photo ids with an Edit in [startTime, endTime), or nil and
--- a message. endTime nil means no upper bound.
-function HistoryAdapter:editedImageIds(startTime, endTime)
+-- a message. endTime nil means no upper bound. includeCreated also counts photos
+-- imported or virtual copies made in that time.
+function HistoryAdapter:editedImageIds(startTime, endTime, includeCreated)
 	if not readFile(self.sqlitePath) then
 		return nil,
 			string.format(
@@ -46,7 +47,7 @@ function HistoryAdapter:editedImageIds(startTime, endTime)
 	local scriptPath = self.tempDir .. "/EditWindowJobs-history.sql"
 	local outputPath = self.tempDir .. "/EditWindowJobs-history.out"
 	local script = assert(io.open(scriptPath, "w"))
-	script:write(HistorySql.editedImagesScript(startTime, endTime))
+	script:write(HistorySql.editedImagesScript(startTime, endTime, includeCreated))
 	script:close()
 
 	local command = string.format(

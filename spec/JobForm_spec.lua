@@ -28,6 +28,7 @@ describe("JobForm.fields", function()
 			unit = "days",
 			startDate = "",
 			endDate = "",
+			includeCreated = false,
 		}, fields)
 	end)
 
@@ -44,6 +45,13 @@ describe("JobForm.fields", function()
 		assert.are.equal("fixed", fields.kind)
 		assert.are.equal("2026-10-01", fields.startDate)
 		assert.are.equal("7", fields.amount)
+		assert.is_false(fields.includeCreated)
+	end)
+
+	it("fills the created photos checkbox from a saved Job", function()
+		assert.is_true(
+			JobForm.fields({ includeCreated = true, window = { kind = "relative", amount = 1, unit = "days" } }).includeCreated
+		)
 	end)
 end)
 
@@ -88,6 +96,7 @@ describe("JobForm.toJob", function()
 			unit = "days",
 			startDate = "",
 			endDate = "",
+			includeCreated = false,
 		}
 		for key, value in pairs(overrides or {}) do
 			result[key] = value
@@ -106,7 +115,12 @@ describe("JobForm.toJob", function()
 			},
 			target = { id = 13, path = "Family › best of" },
 			window = { kind = "relative", amount = 7, unit = "days" },
+			includeCreated = false,
 		}, job)
+	end)
+
+	it("keeps the created photos checkbox", function()
+		assert.is_true(JobForm.toJob(fields({ includeCreated = true }), entries, "job-1").includeCreated)
 	end)
 
 	it("builds a fixed window from the date fields", function()
