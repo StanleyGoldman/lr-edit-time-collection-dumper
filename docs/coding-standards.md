@@ -14,12 +14,12 @@ Rules for the plugin's Lua. Formatting and globals are enforced by `stylua.toml`
 - **Keep every `.lua` file flat in `EditWindowJobs.lrdevplugin/`.** Lightroom's `require` loads only files at the top of the plugin folder.
 - **Give SDK-facing files a role suffix: `*Adapter.lua` (catalog, history, storage), `*Dialog.lua` (`LrView` UI), `*Menu.lua` (menu entry points).** Every other module is core: plain Lua, no `import`, no I/O. Core is what busted tests without Lightroom, and `.luacheckrc` grants `import` only to suffixed files, so an SDK call in core fails lint.
 - **Represent times in core as numbers of Cocoa seconds** (seconds since 2001-01-01 UTC, the SDK's `LrDate` epoch). One unit end to end means no conversion bugs at the boundary.
-- **Pass SDK modules into adapters as arguments** (`CatalogAdapter.new { catalog = ..., LrTasks = ... }`) rather than importing them at file scope. Specs then hand in fakes, and the stub `import` in `spec/helper.lua` stays a tripwire for anything missed.
+- **Pass SDK modules into adapters as arguments** (`CatalogAdapter.new { catalog = ..., pcall = LrTasks.pcall }`) rather than importing them at file scope. Specs then hand in fakes, and the stub `import` in `spec/helper.lua` stays a tripwire for anything missed. `LightroomAdapter.lua` is the composition root that imports the SDK and builds the others.
 - **Put each SDK or external-process dependency in exactly one adapter.** A Lightroom version change or a catalog schema change then touches one file.
 
 ## LrTasks and write access
 
-- **Start every menu entry point with `LrTasks.startAsyncTask` wrapping `LrFunctionContext.callWithContext`, and call `LrDialogs.attachErrorDialogToFunctionContext` on that context.** Catalog reads, `LrTasks.execute` and dialogs need a yielding task, and the attached dialog turns an uncaught error into a message instead of a silent failure.
+- **Start every menu entry point through `LightroomAdapter.command`**, which runs it in `LrTasks.startAsyncTask` wrapping `LrFunctionContext.callWithContext` with `LrDialogs.attachErrorDialogToFunctionContext`. Catalog reads, `LrTasks.execute` and dialogs need a yielding task, and the attached dialog turns an uncaught error into a message instead of a silent failure.
 - **Catch errors with `LrTasks.pcall`.** Plain `pcall` cannot yield, so a yielding SDK call inside it raises "Yielding is not allowed within a C or metamethod call".
 - **Call `catalog:withWriteAccessDo(actionName, func, { timeout = ... })` with a timeout, check its returned status, and make the outermost write the only one.** Without a timeout a busy catalog fails the call immediately; the return value is the only signal that the write did not happen; nested write blocks raise an error.
 - **Save Jobs with `withPrivateWriteAccessDo`.** Saving a plugin property is bookkeeping, and private write access keeps it off the undo stack so undo reverts only Runs.

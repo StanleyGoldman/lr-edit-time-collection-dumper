@@ -2,6 +2,8 @@
 -- Core modules get plain Lua 5.1, so an SDK call in core fails lint; only
 -- the role-suffixed files below (see docs/coding-standards.md) may import.
 std = "lua51"
+-- Adapters and fakes implement shared method interfaces, so some methods ignore self.
+self = false
 
 -- .claude/ holds local agent worktrees and spike/ the untracked spike leftovers.
 exclude_files = { ".lua/", ".luarocks/", "lua_modules/", ".claude/", "spike/" }
