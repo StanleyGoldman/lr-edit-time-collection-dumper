@@ -8,14 +8,13 @@ local HistoryAdapter = {}
 HistoryAdapter.__index = HistoryAdapter
 
 -- args.execute: LrTasks.execute. args.sqlitePath, args.catalogPath, args.tempDir:
--- absolute paths. args.isWindows: WIN_ENV.
+-- absolute paths. args.isWindows: WIN_ENV, which decides the cmd.exe quoting.
 function HistoryAdapter.new(args)
 	return setmetatable({
 		execute = args.execute,
 		sqlitePath = args.sqlitePath,
 		catalogPath = args.catalogPath,
 		tempDir = args.tempDir,
-		separator = args.isWindows and "\\" or "/",
 		isWindows = args.isWindows,
 	}, HistoryAdapter)
 end
@@ -40,8 +39,9 @@ function HistoryAdapter:editedImageIds(startTime, endTime)
 				self.sqlitePath
 			)
 	end
-	local scriptPath = self.tempDir .. self.separator .. "EditWindowJobs-history.sql"
-	local outputPath = self.tempDir .. self.separator .. "EditWindowJobs-history.out"
+	-- Windows accepts "/" in paths, so one separator serves every platform.
+	local scriptPath = self.tempDir .. "/EditWindowJobs-history.sql"
+	local outputPath = self.tempDir .. "/EditWindowJobs-history.out"
 	local script = assert(io.open(scriptPath, "w"))
 	script:write(HistorySql.editedImagesScript(startTime, endTime))
 	script:close()
