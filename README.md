@@ -10,8 +10,8 @@ The tests and linters run on a local Lua 5.1 in `.lua/` (gitignored), matching t
 2. Install hererocks and build Lua 5.1 with LuaRocks:
 
    ```bat
-   pip install hererocks
-   hererocks .lua -l 5.1 -r latest
+   pip install hererocks==0.25.1
+   hererocks .lua -l 5.1 -r 3.8.0
    ```
 
    The LuaRocks installer may pause on "Press any key"; press Enter to let it finish.
@@ -27,8 +27,10 @@ The tests and linters run on a local Lua 5.1 in `.lua/` (gitignored), matching t
 4. Install StyLua (open a new shell afterwards so it is on `PATH`):
 
    ```bat
-   winget install JohnnyMorganz.StyLua
+   winget install JohnnyMorganz.StyLua --version 2.5.2
    ```
+
+These versions match `.github/workflows/ci.yml`; change both together.
 
 If hererocks stops with `couldn't run install.bat` or `can't find luarocks.bat`, the shell has `NoDefaultCurrentDirectoryInExePath` set. Run `set NoDefaultCurrentDirectoryInExePath=` and repeat step 2.
 
